@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 class Painter extends CustomPainter {
   final Offset center;
-  final Offset position;
+  final double angle;
+  final double length;
 
-  Painter(this.center, this.position);
+  Painter(this.center, this.angle, this.length);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -13,9 +15,19 @@ class Painter extends CustomPainter {
       ..color = Colors.black
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(position, 5, pencil);
+    var finalPosition = positionByAngle(angle, length);
+
+    canvas.drawLine(Offset.zero, finalPosition, pencil);
+    canvas.drawCircle(finalPosition, 5, pencil);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+
+  Offset positionByAngle(double angle, double length) {
+    var x = length * math.sin(angle);
+    var y = length * math.cos(angle);
+
+    return Offset(x, y);
+  }
 }

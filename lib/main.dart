@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pendulum_medium/painter.dart';
+import 'dart:math' as math;
 
 void main() {
   runApp(MyApp());
@@ -9,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Simple Animation',
       home: HomeApp(),
     );
   }
@@ -24,8 +25,11 @@ class HomeApp extends StatefulWidget {
 
 class _HomeAppState extends State<HomeApp> {
   Offset center = Offset.zero;
-  Offset position = Offset.zero;
-  final velocity = 10;
+  double angle = math.pi / 3;
+  double angularVelocity = 0;
+  double angularAcceleration = 0;
+  double length = 100;
+  double g = 0.75;
 
   @override
   void initState() {
@@ -41,7 +45,7 @@ class _HomeAppState extends State<HomeApp> {
     return Scaffold(
       body: SafeArea(
         child: CustomPaint(
-          painter: Painter(center, position),
+          painter: Painter(center, angle, length),
           child: Container(
             width: double.infinity,
             height: double.infinity,
@@ -54,7 +58,9 @@ class _HomeAppState extends State<HomeApp> {
   void timer() {
     Future.delayed(Duration(milliseconds: 20)).then((_) {
       setState(() {
-        position = Offset(position.dx + velocity, position.dy);
+        angularAcceleration = -g/length * math.sin(angle);
+        angularVelocity += angularAcceleration;
+        angle += angularVelocity;
       });
 
       timer();
